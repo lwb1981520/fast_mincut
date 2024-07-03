@@ -1,10 +1,10 @@
-/* defs.h */
 
-//#ifdef EXCESS_TYPE_LONG
-///typedef unsigned long excessType;
-//#else
-typedef unsigned long long int excessType; /* change to double if not supported */
-//#endif
+
+
+
+
+typedef unsigned long long int excessType; 
+
 
 typedef unsigned long cType;
 typedef unsigned int sType;
@@ -15,16 +15,16 @@ typedef
 
    cType endNode;
    cType cap;
-   cType w; /*weight*/
-   cType avgCV; /*average CV of cut set where this edge belongs to */
+   cType w; 
+   cType avgCV; 
    long tmp;
 
-   struct edgeProp* rev; //reverse
+   struct edgeProp* rev; 
 
 }edgeP;
 
 
-typedef  /* node */
+typedef  
    struct nodeProp
 {
    edgeP* edges;
@@ -55,19 +55,19 @@ struct NodePropArr_{
    cType * pdep;
    long * pcv;
    short * ps;
-   cType * pacc_upid; // up node id
-   long* pacc_upmincv; // min of [currnet node, upnode)
-   cType * pacc_pos_upmincv; // the diff of depth of nearest min value
-   cType * pacc_jointid; //the nearest joint id;
-   long* pacc_jointmcv; //the min of [cur, joint node)
+   cType * pacc_upid; 
+   long* pacc_upmincv; 
+   cType * pacc_pos_upmincv; 
+   cType * pacc_jointid; 
+   long* pacc_jointmcv; 
    
 } NodePropArr;
 
-/////////////////////////////////////////
-///////////////////////////////////////// The definition of data structure
-/////////////////////////////////////////
 
-//data structure that holds graph data
+
+
+
+
 typedef
 struct GraphData_{
 
@@ -77,7 +77,7 @@ struct GraphData_{
 } GraphData;
 
 
-//data structure that holds data for randomrization
+
 typedef
 struct RandomData_{
   cType *randNums;
@@ -87,20 +87,20 @@ struct RandomData_{
 } RandomData;
 
 
-//data structure that holds preprocessing data
+
 typedef
 struct PreprocData_{
 
-  //graph data
+  
   GraphData *gd;
 
-  //holds data in all passes
+  
   NodePropArr* allResults;
 
-  //pre-generated data
+  
   RandomData* rd;
 
-  //<BEING> hold the hot data in current pass
+  
   cType *gpfa;
   cType *gpdep;
   long *gpcv;
@@ -110,20 +110,20 @@ struct PreprocData_{
   cType *gpaccposmcv;
   cType *gpaccjointid;
   long *gpaccjointmcv;
-  //<END>
+  
 
-  cType *roots; //records root in each pass
+  cType *roots; 
 
-  int mode; //the traversing mode, as explained in the paper
+  int mode; 
 
-  int P; // P% percent of total passes in mode 1, the remaining in mode 2
-  int total; //number of total passes
-  int SPAN_LEN; //the length of a ancestor span, used for acceleration in traversal trees
+  int P; 
+  int total; 
+  int SPAN_LEN; 
 
-  long C ; //the maximum index for per-node cut fingerprinter
-  cType* gcut_fp; //cut fingerprint for all nodes
-  long* gcut_fp_nh; //first index of per-node cut fingerprint
-  cType* garr; //临时变量，每次要清零
+  long C ; 
+  cType* gcut_fp; 
+  long* gcut_fp_nh; 
+  cType* garr; 
   long gh;
 
 

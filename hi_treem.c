@@ -1,5 +1,5 @@
-/* Maximum flow - highest lavel push-relabel algorithm */
-/* COPYRIGHT C 1995, 2000 by IG Systems, Inc., igsys@eclipse.net */
+
+
   
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,9 +9,9 @@
 #include <math.h>
 #include <time.h>
 
-#include "types_treem.h"  /* type definitions */
-#include "parser_treem.c" /* parser */
-#include "timer.c"        /* timing routine */
+#include "types_treem.h"  
+#include "parser_treem.c" 
+#include "timer.c"        
 
 #define MAX_LONG LONG_MAX
 
@@ -22,12 +22,12 @@
 
 
 
-///////////////////////////////////////////
-///////////////////////////////////////////The definition of functions
-///////////////////////////////////////////
 
 
-//The function for allocation
+
+
+
+
 void *walloc(unsigned int num, unsigned int size)
 {
   void *ptr = calloc(num, size);
@@ -35,28 +35,28 @@ void *walloc(unsigned int num, unsigned int size)
   return ptr;
 }
 
-// //The function for randomization
-// cType mrand(RandomData* rd)
-// {
-//   return rd->randNums[rd->randNumIdx++ % rd->len];
-// }
 
-// RandomData* initrand(cType len)
-// {
-//   RandomData *rd = walloc(1, sizeof(RandomData));
-//   rd->len = len;
-//   srand((int)(timer() * 1000));
 
-//   rd->randNums = (cType *)walloc(len, sizeof(cType));
-//   rd->randNumIdx = 0;
 
-//   for (int i = 0; i < len; i++)
-//   {
-//     rd->randNums[i] = (cType)rand();
-//   }
 
-//   return rd;
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 RandomData* initrand2(RandomData *rd )
 {
@@ -84,7 +84,7 @@ RandomData* initrand(cType len)
   return rd;
 }
 
-//The function for randomization
+
 cType mrand(RandomData* rd)
 {
   if(rd->randNumIdx >= rd->maxLen){
@@ -93,14 +93,14 @@ cType mrand(RandomData* rd)
   return rd->randNums[rd->randNumIdx++];
 }
 
-/////////////////////////The two function for heap sorting edges 
+
 void HeapAdjustDown(sType *idx, edgeP * edges ,int start,int end)  
 {  
     sType tempIdx = idx[start];  
 
     int i = 2*start+1;      
     
-    // assert(idx[0] != idx[3]);
+    
     
     while(i<=end)  
     {  
@@ -129,7 +129,7 @@ void HeapSort(sType *idx, edgeP * edges, int len)
 
     for(i=len-1;i>0;i--)
     {  
-        // printf("swap 0 with %d \n",i);
+        
         sType temp = idx[i];  
         idx[i] = idx[0];  
         idx[0] = temp;  
@@ -139,7 +139,7 @@ void HeapSort(sType *idx, edgeP * edges, int len)
 
 }  
   
-/////////////////////The function to sort edges using capacity
+
 void deOrderEdgeByRandomCap(nodeP *np,PreprocData *pd)
 {
 
@@ -158,7 +158,7 @@ void deOrderEdgeByRandomCap(nodeP *np,PreprocData *pd)
     assert(cnt<4 || idxs[2]!=idxs[3]);  
 }
 
-///////////////////The function to sort edges using the value of currently minimal cut one edge belongs to 
+
 void aOrderEdgeByAvgCV(nodeP *np,PreprocData *pd)
 {
   if (np->nIdx == 0)
@@ -206,7 +206,7 @@ void buildAcc(PreprocData *pd, cType curN, cType upid, long mcv, cType lastDepMC
   cType curDep = pd->gpdep[curN];
 
   assert(curDep == 0 || curCV >0);
-//logic for span
+
   mcv = min(mcv, curCV);
   if(mcv == curCV){
     lastDepMCV = curDep;
@@ -220,10 +220,10 @@ void buildAcc(PreprocData *pd, cType curN, cType upid, long mcv, cType lastDepMC
   {
     upid = curN;
     mcv = MAX_LONG;
-    lastDepMCV = 0; //doesn't matter, will be udpated in the subsequent call
+    lastDepMCV = 0; 
   }
 
-//-logic for joint node
+
   cType childCnt = pd->gpaccjointid[curN];
   lastJointMCV = min(lastJointMCV,curCV);
   pd->gpaccjointmcv[curN] = lastJointMCV;
@@ -231,13 +231,13 @@ void buildAcc(PreprocData *pd, cType curN, cType upid, long mcv, cType lastDepMC
 
   assert(pd->gpdep[curN] == 0 || pd->gpaccjointmcv[curN] > 0.1);
   
-  //gpaccjointid[curN] is updated by markcut() to contain the number of traversing children
+  
   if(childCnt > 1 ){
     lastJointNodeId = curN;
     lastJointMCV = MAX_LONG;
   }
   else{
-    //do nothing
+    
   }
 
 
@@ -251,10 +251,10 @@ void buildAcc(PreprocData *pd, cType curN, cType upid, long mcv, cType lastDepMC
     cnt--;
   }
 
-  // assert(childCnt == 0);
+  
 }
 
-//////////////////////////////////The function to traverse the graph for one pass, i.e. the checkNode function of Algorithm 2 in the paper
+
 cType gRoot = 0;
 cType gRDep = 0;
 void markCut(cType curN, PreprocData *pd)
@@ -276,7 +276,7 @@ void markCut(cType curN, PreprocData *pd)
     gRDep = *curCV;
     gRoot = curN;
   }
-  // printf("dep is %ld\n",*curDep);
+  
   *curS = 1;
   *curCV = 0;
   nodeP *np = nodes + curN;
@@ -284,10 +284,10 @@ void markCut(cType curN, PreprocData *pd)
   int cnt = np->nIdx;
 
   if(pd->gpdep[curN] > 0){
-    // if(pd->gpdep[pd->gpfa[curN]] != pd->gpdep[curN] -1){
-    //   printf("--curN %d %d %d\n", curN, pd->gpdep[pd->gpfa[curN]], pd->gpdep[curN]);
-    //   exit(0);
-    // }
+    
+    
+    
+    
 
     assert(pd->gpdep[pd->gpfa[curN]] == pd->gpdep[curN] -1);
 
@@ -313,7 +313,7 @@ void markCut(cType curN, PreprocData *pd)
 
   if (pd->mode == 1)
   {
-    deOrderEdgeByRandomCap(np,pd); //
+    deOrderEdgeByRandomCap(np,pd); 
   }
   else if (pd->mode == 2)
   {
@@ -326,7 +326,7 @@ void markCut(cType curN, PreprocData *pd)
   np->totalCap = 0;
   for (int ni = 0; ni < cnt; ni++)
   {
-    // nodeP* znp = nodes+eh->endNode;
+    
 
     edgeP *eh = pedges + idxs[ni];
     cType zn = eh->endNode;
@@ -350,41 +350,41 @@ void markCut(cType curN, PreprocData *pd)
     {
       pd->gpfa[zn] = curN;
       pd->gpdep[zn] = *curDep + 1;
-      // pd->gpaccjointid[curN] ++;
+      
       markCut(zn,pd);
       assert(pd->gpdep[zn] == pd->gpdep[curN] + 1);
       *curCV += pd->gpcv[zn];
     }
     else
     {
-      //bypass, no need to handle
+      
     }
   }
 
 
   if(pd->mode == 1){
-//update ver 2 w,according to
+
     for (int ni = 0; ni < cnt; ni++)
     {
-      // nodeP* znp = nodes+eh->endNode;
+      
 
       edgeP *eh = pedges + idxs[ni];
       cType zn = eh->endNode;
-      // nodeP *znp = nodes+zn;
+      
 
       assert(zn != 0);
       assert(zn != curN);
       short zs = pd->gps[zn];
     
 
-      //progate weight to curN's edges
+      
       if (zs == 1 && pd->gpdep[zn] != *curDep - 1)
       {
           cType weight = eh-> w;
           if(eh->avgCV == 0){
             eh->avgCV = MAX_LONG;
           }
-          eh->avgCV = min(eh->avgCV, *curCV);//((eh->avgCV) * weight + *curCV)/(weight+1);
+          eh->avgCV = min(eh->avgCV, *curCV);
           eh->w = weight+1;
           
           edgeP *reh = eh->rev;
@@ -394,7 +394,7 @@ void markCut(cType curN, PreprocData *pd)
           }
 
           weight = reh-> w;
-          reh->avgCV = min(reh->avgCV, *curCV);//((reh->avgCV) * weight + *curCV)/(weight+1);
+          reh->avgCV = min(reh->avgCV, *curCV);
           reh->w = weight+1;
 
       }
@@ -409,7 +409,7 @@ void markCut(cType curN, PreprocData *pd)
 
 }
 
-////////////////////////////////The function to obtain min-cut value of given node pair, i.e., Algorithm 3 in the paper
+
 long solveMaxFlowAccVER4(long minCandi, NodePropArr np, cType s, cType t, int SPAN_LEN)
 {
   cType *pDep = np.pdep;
@@ -442,7 +442,7 @@ long solveMaxFlowAccVER4(long minCandi, NodePropArr np, cType s, cType t, int SP
     s = ups;
     ups = paccup[ups];
   } 
-//   assert(mcv >100.0);
+
   assert(pDep[ups] <=depT && pDep[s] >= depT);
 
   cType upt = t;
@@ -476,7 +476,7 @@ long solveMaxFlowAccVER4(long minCandi, NodePropArr np, cType s, cType t, int SP
   cType min_bound2 = min(paccmcv[s],paccmcv[t]);
 
   if(min_bound2 >= mcv || min_bound2 >= minCandi){
-    //no need to search
+    
     return mcv;
   }
 
@@ -485,9 +485,9 @@ long solveMaxFlowAccVER4(long minCandi, NodePropArr np, cType s, cType t, int SP
   }
 
 
-  ///////////////////////check inside one SPAN
-  //(1) we need to check whether s and t in the same line, i.e., t is the ancestor of s  
-  //the only way is to apprach the depth of t and check
+  
+  
+  
 
   if(pDep[s] != pDep[t]){
 
@@ -515,7 +515,7 @@ long solveMaxFlowAccVER4(long minCandi, NodePropArr np, cType s, cType t, int SP
         return min(mcv,jmcv[s]);
       }
       else{
-        //s and t in two lines
+        
         assert(pDep[jups] == depT && pDep[s] > depT);
         goto STEP_CHECK_IN_TWOLINES;
       }
@@ -535,13 +535,13 @@ long solveMaxFlowAccVER4(long minCandi, NodePropArr np, cType s, cType t, int SP
       }
 
       assert(s!=t && pDep[s] == depT);
-      //s and t in two lines.
+      
       goto STEP_CHECK_IN_TWOLINES;
 
     }
   }
   else{
-      //pDep[s] == pDep[t];
+      
       if(s == t){
         return mcv;
       }    
@@ -552,8 +552,8 @@ STEP_CHECK_IN_TWOLINES:
 
   while (s != t)
   { 
-    // assert(jmcv[s] > 0.1);
-    // assert(jmcv[t] > 0.1);
+    
+    
     if(pDep[s] > pDep[t]){
       mcv = min(mcv, jmcv[s]);
       if(mcv == min_bound2){
@@ -591,7 +591,7 @@ long solveMaxFlowAccVER3(long minCandi, NodePropArr np, cType s, cType t)
 
 
   assert(s != t);
-  // printf("o-> pDeps-depT %ld %ld \n",pDep[s],pDep[t]);
+  
   if (pDep[s] < pDep[t])
   {
     cType tmp = s;
@@ -602,29 +602,29 @@ long solveMaxFlowAccVER3(long minCandi, NodePropArr np, cType s, cType t)
   cType depT = pDep[t];
   assert(pDep[s] >= depT);
 
-  // printf("o2-> pDeps-depT %ld %ld \n",pDep[s],pDep[t]);
+  
 
   long mcv = minCandi;
 
   while(pDep[s] > depT){
-    // if(pDep[pFa[s]] <  depT){
-    //   printf("o22-> pDeps-depT %ld fa%ld %ld \n",pDep[s],pDep[pFa[s]],pDep[t]);
-    // }
-    // printf("--node s %d s.Fa %d dep %d pDep[pFa[s]] %d  pDep[s]-1 %d\n",s, pFa[s], pDep[s],pDep[pFa[s]],pDep[s]-1);
+    
+    
+    
+    
     assert(pDep[pFa[s]] == pDep[s] -1);
     mcv = min(mcv,pCV[s]); 
     s = pFa[s];  
     
   }
 
-  // printf("o3-> pDeps-depT %ld %ld \n",pDep[s],pDep[t]);
+  
 
   if(s == t){
     return mcv;
   }
-  // if(pDep[s] != depT){
-  //   printf("pDeps-depT %ld %ld \n",pDep[s],depT);
-  // }
+  
+  
+  
   assert(pDep[s] == depT);
 
   while (s != t)
@@ -640,7 +640,7 @@ long solveMaxFlowAccVER3(long minCandi, NodePropArr np, cType s, cType t)
 
 }
 
-//////////////////////function to load graph data
+
 void loadGraphData(PreprocData *pd){
   pd->gd = walloc(1,sizeof(GraphData));  
 
@@ -649,7 +649,7 @@ void loadGraphData(PreprocData *pd){
   printf("c nodes:       %10ld\nc arcs:        %10ld\nc\n", pd->gd->N, pd->gd->M);
 }
 
-///////////////////function to initialize data structure
+
 void initPreprocData(PreprocData *pd){
   pd->rd = NULL;
   pd->SPAN_LEN = (int)(sqrt(pd->gd->N));
@@ -679,26 +679,26 @@ void initPreprocData(PreprocData *pd){
     allResults[i].pdep = (cType *)walloc(len, sizeof(cType));
     allResults[i].pcv = (long *)walloc(len, sizeof(long));
     allResults[i].ps = (short *)walloc(len, sizeof(short));
-    // allResults[i].pacc_upid = (cType *)walloc(len, sizeof(cType));
-    // allResults[i].pacc_upmincv = (long *)walloc(len, sizeof(long));
-    // allResults[i].pacc_pos_upmincv = (cType *)walloc(len, sizeof(cType));
-    // allResults[i].pacc_jointid = (cType *)walloc(len, sizeof(cType));
-    // allResults[i].pacc_jointmcv = (long *)walloc(len, sizeof(long));
+    
+    
+    
+    
+    
 
     memset(allResults[i].pfa, 0, len * sizeof(cType));
     memset(allResults[i].pdep, 0, len * sizeof(cType));
     memset(allResults[i].pcv, 0, len * sizeof(long));
     memset(allResults[i].ps, 0, len * sizeof(short));
-    // memset(allResults[i].pacc_upid, 0, len * sizeof(cType));
-    // memset(allResults[i].pacc_upmincv, 0, len * sizeof(long));
-    // memset(allResults[i].pacc_pos_upmincv, 0, len * sizeof(cType));
-    // memset(allResults[i].pacc_jointid, 0, len * sizeof(cType));
-    // memset(allResults[i].pacc_jointmcv, 0, len * sizeof(long));
+    
+    
+    
+    
+    
   }  
 }
 
 
-/////////////////////function to traverse the graph data for multiple times, i.e., Algorithm 2 in the paper
+
 void preProc(PreprocData *pd){
   double tm;
   double totalProcTime = 0;
@@ -706,7 +706,7 @@ void preProc(PreprocData *pd){
   struct timespec time_start={0,0},time_end={0,0};
 
   NodePropArr *allResults = pd->allResults;
-  //calculate total cap of one node
+  
   cType root;
   gRoot = 1;
 
@@ -717,19 +717,19 @@ void preProc(PreprocData *pd){
       pd->rd = NULL;
     }
     pd->rd = initrand(pd->gd->M*2+7);    
-    // printf("the %d times\n",i);
+    
     pd->gpfa = allResults[ipass].pfa;
     pd->gpdep = allResults[ipass].pdep;
     pd->gpcv = allResults[ipass].pcv;
     pd->gps = allResults[ipass].ps;
-    // pd->gpaccup = allResults[ipass].pacc_upid;
-    // pd->gpaccmcv = allResults[ipass].pacc_upmincv;
-    // pd->gpaccposmcv = allResults[ipass].pacc_pos_upmincv;
-    // pd->gpaccjointid = allResults[ipass].pacc_jointid;
-    // pd->gpaccjointmcv = allResults[ipass].pacc_jointmcv;
+    
+    
+    
+    
+    
 
     if(pd->total == 110){
-      pd-> mode = 11; //avgcv中存连祖先的容量值
+      pd-> mode = 11; 
     }
     else{
       pd->mode = ipass < pd->P * pd->total / 100 ? 1 : 2;
@@ -741,18 +741,18 @@ void preProc(PreprocData *pd){
 
     root = gRoot;
     pd->roots[ipass] = root;
-    gRDep = 0;//so gRoot and gRDep can be set in program
+    gRDep = 0;
     pd->gpdep[root] = 0;
     
     printf("pass %d, randidx %ld, root is %ld\n",ipass, 0,root);
-    // printf("root fa %ld\n",allResults[i].pfa[root]);
+    
     clock_gettime(CLOCK_REALTIME,&time_start);
     markCut(root,pd);
 
 
     pd->gpcv[root] = MAX_LONG;
 
-    // buildAcc(pd, root, root, MAX_LONG, pd->gpdep[root],root,MAX_LONG);
+    
     clock_gettime(CLOCK_REALTIME,&time_end);
     tm = 10e9*time_end.tv_sec +time_end.tv_nsec - 10e9*time_start.tv_sec - time_start.tv_nsec;
     tm = tm/10e9;
@@ -763,7 +763,7 @@ void preProc(PreprocData *pd){
       printf("c the %d passes\n", ipass);
     }
 
-    // free(pd->gpdep);
+    
     free(pd->gps);
   }
 
@@ -771,20 +771,20 @@ void preProc(PreprocData *pd){
 
 }
 
-/////////////////////cut fingerprint collector in one pass
+
 void cut_fingerprint(cType curN, PreprocData *pd)
 {
   nodeP* nodes = pd->gd->nodes;
   long *curCV = pd->gpcv + curN;
-  // cType *curDep = pd->gpdep + curN;
-  //printf("dep is %ld\n",*curDep);
+  
+  
   nodeP *np = nodes + curN;
   edgeP *pedges = np->edges;
   int cnt = np->nIdx;
-  // if(pd->gcut_fp_nh[curN] <= 0){
-    // printf("$$$$$$$$$$$$$curN %ld fdnh %ld gh %ld\n",curN,pd->gcut_fp_nh[curN],pd->gh);
-  // }
-  //assert (pd->gcut_fp_nh[curN] > 0);
+  
+    
+  
+  
   cType ov;
   long oh;
 
@@ -796,12 +796,12 @@ void cut_fingerprint(cType curN, PreprocData *pd)
   }
 
   if(pd->gh <= ulimit){ 
-    //说明全局变量里有值了，否则等于全局还没更新
-    // long sum = 0;
+    
+    
     for( long i=pd->gh; i<=ulimit; i++){
       pd->gcut_fp[curN*pd->C+i] += pd->garr[i];
 
-      ////////////////////BEGIN: 叠加计算
+      
       /*
         叠加计算的含义是：单次序列不是每个割值的个数，而是每个割值及以前割值的总个数
         动机：让某个值不一样时能向前传递
@@ -811,8 +811,8 @@ void cut_fingerprint(cType curN, PreprocData *pd)
         潜在问题1：如果garr叠加序列，idx=3不一样，但到了idx=5又一样了咋办？ 就会出现误判，等于两个地方都不一样，但是出现加和后一样了
 
       */
-      // sum += pd->garr[i];
-      ////////////////////END: 叠加计算
+      
+      
     }
 
 
@@ -824,7 +824,7 @@ void cut_fingerprint(cType curN, PreprocData *pd)
 
   for (int ni = 0; ni < cnt; ni++)
   {
-    // nodeP* znp = nodes+eh->endNode;
+    
 
     edgeP *eh = pedges + ni;
     cType zn = eh->endNode;
@@ -850,7 +850,7 @@ void cumsum_cut_fingerprint(PreprocData *pd)
 
     long ulimit = min((nodes+curN)->totalCap, pd->C);
 
-      //说明全局变量里有值了，否则等于全局还没更新
+      
       long sum = 0;
       for( long i=pd->gcut_fp_nh[curN]; i<=ulimit; i++){
         sum+=pd->gcut_fp[curN*pd->C+i];
@@ -864,16 +864,16 @@ void cumsum_cut_fingerprint(PreprocData *pd)
 
 }
 
-/////////////////////function to obtain cut fingerprint
+
 void preProc_cut_fingerprint(PreprocData *pd){
   double tm;
   double totalProcTime = 0;
   struct timespec time_start={0,0},time_end={0,0};
   NodePropArr *allResults = pd->allResults;
-  //calculate total cap of one node
-  // cType root;
+  
+  
  
-  //单次遍历时临时变量
+  
 
   for (int ipass = 0; ipass < pd->total; ipass++)
   {
@@ -882,29 +882,29 @@ void preProc_cut_fingerprint(PreprocData *pd){
       pd->rd = NULL;
     }
     pd->rd = initrand(pd->gd->M*2);    
-    // printf("the %d times\n",i);
+    
     pd->gpfa = allResults[ipass].pfa;
-    // pd->gpdep = allResults[ipass].pdep;
+    
     pd->gpcv = allResults[ipass].pcv;
-    // pd->gps = allResults[ipass].ps;
-    // pd->gpaccup = allResults[ipass].pacc_upid;
-    // pd->gpaccmcv = allResults[ipass].pacc_upmincv;
-    // pd->gpaccposmcv = allResults[ipass].pacc_pos_upmincv;
-    // pd->gpaccjointid = allResults[ipass].pacc_jointid;
-    // pd->gpaccjointmcv = allResults[ipass].pacc_jointmcv;
+    
+    
+    
+    
+    
+    
 
-    // if(pd->total == 110){
-    //   pd-> mode = 11; //avgcv中存连祖先的容量值
-    // }
-    // else{
-    //   pd->mode = ipass < pd->P * pd->total / 100 ? 1 : 2;
-    // }
-    // root = 1 + ((mrand(pd->rd) * mrand(pd->rd)) % pd->gd->N);
+    
+    
+    
+    
+    
+    
+    
 
-    // pd->roots[ipass] = root;
-    // pd->gpdep[root] = 0;
+    
+    
     printf("pass %d, root is %ld\n",ipass, pd->roots[ipass]);
-    // printf("root fa %ld\n",allResults[i].pfa[root]);
+    
     clock_gettime(CLOCK_REALTIME,&time_start);
     pd->gh = MAX_LONG;
     memset(pd->garr, 0, 100* pd->C * sizeof(long));   
@@ -912,9 +912,9 @@ void preProc_cut_fingerprint(PreprocData *pd){
     clock_gettime(CLOCK_REALTIME,&time_end);
 
     free(pd->gpfa);
-    // free(pd->gpdep);
+    
     free(pd->gpcv);
-    // free(pd->gps);
+    
 
     tm = 10e9*time_end.tv_sec +time_end.tv_nsec - 10e9*time_start.tv_sec - time_start.tv_nsec;
     tm = tm/10e9; 
@@ -930,12 +930,12 @@ void preProc_cut_fingerprint(PreprocData *pd){
 
 }
 
-/////////////////////cut fingerprint 求解
+
 long solveMaxFlowAccVER4_CF(cType s, cType t, PreprocData *pd)
 {
   assert(pd->gcut_fp_nh[s] > 0);
-  // return min((pd->gd->nodes+s)->totalCap,(pd->gd->nodes+t)->totalCap);
-  long mv  = MAX_LONG; //min((pd->gd->nodes+s)->totalCap,(pd->gd->nodes+t)->totalCap);
+  
+  long mv  = MAX_LONG; 
   printf("result2: s %ld t %ld\n",pd->gcut_fp_nh[s] ,pd->gcut_fp_nh[t] );
   if(pd->gcut_fp_nh[s] != pd->gcut_fp_nh[t]){
     mv = min(pd->gcut_fp_nh[s], mv);
@@ -950,40 +950,40 @@ long solveMaxFlowAccVER4_CF(cType s, cType t, PreprocData *pd)
     }
   }
 
-  return mv; //not found
+  return mv; 
 }
 
-/////////////////////cut fingerprint 求解，此时每个idx不是P个序列中idx处的和校验，而是累加和校验，值是从头到idx处值的总和
+
 long solveMaxFlowAccVER5_CF(cType s, cType t, PreprocData *pd)
 {
 
   int count = 1;  
 
   assert(pd->gcut_fp_nh[s] > 0);
-  //这里必须设置上限，不然没法处理.
+  
   long mv  = min((pd->gd->nodes+s)->totalCap,(pd->gd->nodes+t)->totalCap);
 
   
 
-  // printf("result2: s %ld t %ld\n",pd->gcut_fp_nh[s] ,pd->gcut_fp_nh[t] );
+  
   if(pd->gcut_fp_nh[s] != pd->gcut_fp_nh[t] ){
     mv = min(pd->gcut_fp_nh[s], mv);
     mv = min(pd->gcut_fp_nh[t], mv);
-    // printf("@count : %ld first neq \n",count);
+    
     return mv;
   }  
 
-  // mv = min(mv, pd->C);
-  //二元搜索
+  
+  
   long lidx = pd->gcut_fp_nh[s];
   long hidx = mv;
 
-  // printf("c hidx %ld - lidx %ld =  %ld \n",hidx, lidx, hidx - lidx);
+  
 
-  // if(pd->gcut_fp[s*pd->C + hidx] == pd->gcut_fp[t*pd->C + hidx]){
-  //   // printf("@count : %ld tcap \n",count);
-  //   return mv;
-  // }
+  
+  
+  
+  
 
   while(1==1){
 	if(lidx > hidx){
@@ -998,16 +998,16 @@ long solveMaxFlowAccVER5_CF(cType s, cType t, PreprocData *pd)
 	
     long ix = (lidx + hidx)/2;
     if(pd->gcut_fp[s*pd->C+ix] != pd->gcut_fp[t*pd->C+ix]){
-      //往前走
+      
       hidx = ix;
     }
     else{
-      //往后走
+      
       lidx = ix;
     }
 
-    //lidx始终是相等的位置， hidx始终是不同的位置
-    //如果正好挨着，说明hidx就是
+    
+    
 
     if(lidx+1 == hidx){
       printf("@count : %ld final\n",count);
@@ -1021,9 +1021,9 @@ long solveMaxFlowAccVER5_CF(cType s, cType t, PreprocData *pd)
 }
 
 
-//////////////////////////function to calculate multiple random node pairs, i.e., the calling of Algoirthm 3 for multiple times
+
 void calcuRandomPairs(int numOfPairs, PreprocData *pd){
-  // printf("~~~~~~~~~~~~~~~1 dep %d\n", pd->gpdep[1]);
+  
   double totalTime = 0;
   long mv = MAX_LONG, mv2 = MAX_LONG;
 
@@ -1047,7 +1047,7 @@ void calcuRandomPairs(int numOfPairs, PreprocData *pd){
   for (int ipair = 0; ipair < numOfPairs;)
   {
 
-    // printf("%d\n",i);
+    
     ns = 1 + ((mrand(pd->rd) * mrand(pd->rd)) % (pd->gd->N));
     nt = 1 + ((mrand(pd->rd) * mrand(pd->rd)) % (pd->gd->N));
     if (ns != nt)
@@ -1062,19 +1062,19 @@ void calcuRandomPairs(int numOfPairs, PreprocData *pd){
         mv = solveMaxFlowAccVER5_CF(ns,nt,pd);
         printf("~~result :VER4 %ld, VER5 %ld\n",mv,mv2);
       }
-      // // printf("result :%ld\n",mv);
-      // // assert(mv > 0);
-      // // if(mv == MAX_LONG){
-      //   // assert(1==2);
-        // for (int j = 0; j < pd->total; j++)
-        // {
-        //   long tmp = solveMaxFlowAccVER3(mv, pd->allResults[j], ns, nt);
-        //   if (mv > tmp)
-        //   {
-        //     mv = tmp;
-        //   }
-        // }
-      // }
+      
+      
+      
+      
+        
+        
+        
+        
+        
+        
+        
+        
+      
       	 
       clock_gettime(CLOCK_REALTIME,&time_end);
 	    curTime = 10e9*time_end.tv_sec +time_end.tv_nsec - 10e9*time_start.tv_sec - time_start.tv_nsec;
@@ -1111,54 +1111,54 @@ long getTotalCap(PreprocData *pd, long curN){
   return totalCap;
 }
 
-// void calcuRandomPairsNeighboring(int numOfPairs, PreprocData *pd){
-//   double totalTime = 0;
-//   long mv = MAX_LONG;
-
-//   double curTime = 0;
-//   cType ns, nt;
-
-//   if(pd->rd != NULL){
-//     free(pd->rd);
-//     pd->rd = NULL;
-//   }
-//   pd->rd = initrand(pd->gd->M*2);  
-//   nodeP* nodes = pd->gd->nodes;
-
-//   for (int ipair = 0; ipair < numOfPairs;)
-//   {
-
-//     // printf("%d\n",i);
-//     ns = 1 + ((mrand(pd->rd) * mrand(pd->rd)) % (pd->gd->N));
-
-//     nodeP *np = nodes + ns;
-//     edgeP *pedges = np->edges;
-//     int cnt = np->nIdx;
-//     int to = (mrand(pd->rd) * mrand(pd->rd)) % cnt;
-//     nt = pedges[to].endNode;
-
-//     if (ns != nt)
-//     {
-//       mv = MAX_LONG;
-//       mv = min( getTotalCap(pd,ns), getTotalCap(pd,nt) );
-//       curTime = timer();
-//       for (int j = 0; j < pd->total; j++)
-//       {
-//         long tmp = solveMaxFlowAccVER4(mv, pd->allResults[j], ns, nt,pd->SPAN_LEN);
-//         if (mv > tmp)
-//         {
-//           mv = tmp;
-//         }
-//       }
-//       curTime = timer() - curTime;
-//       totalTime += curTime;
-//       ipair++;
-//       printf("c hi_treem_res(n,s,mflow,tm) %lu %lu %12.01f %12.06f1\n", ns, nt, 1.0 * mv, curTime);
-//     }
-//   }
-
-//   printf("c run ok! average time %10.6f\n", totalTime / numOfPairs);
 
 
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
